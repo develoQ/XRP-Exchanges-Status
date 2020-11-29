@@ -3,7 +3,7 @@ import { $axios } from '../utils/api'
 import { EXCHANGES, ExchangeType } from './exchangeData'
 
 const apiBaseUrl = 'https://data.ripple.com/'
-enum FlagType {
+export enum FlagType {
   RequireDest = 1,
   RequireAuth = 2,
   DisallowXRP = 3,
@@ -15,9 +15,22 @@ enum FlagType {
   DepositAuth = 9,
 }
 
-type exchangeDataType = {
-  flag: FlagType[]
+export type exchangeDataType = {
+  flag: Array<{ type: FlagType; date: string }>
+  activated: string
 } & ExchangeType
+
+interface accountDataType {
+  address: string
+  parent: string
+  // eslint-disable-next-line camelcase
+  initial_balance: string
+  inception: string
+  // eslint-disable-next-line camelcase
+  ledger_index: number
+  // eslint-disable-next-line camelcase
+  tx_hash: string
+}
 
 interface transactionType {
   hash: string
@@ -37,6 +50,12 @@ interface transactionType {
   meta: any
 }
 
+interface responseAccount {
+  result: string
+  // eslint-disable-next-line camelcase
+  account_data: accountDataType
+}
+
 interface responseExchangeTransactionHistory {
   result: string
   count: number
@@ -48,7 +67,7 @@ interface responseExchangeTransactionHistory {
   stateFactory: true,
   namespaced: true,
 })
-class exchange extends VuexModule {
+export default class exchange extends VuexModule {
   exchangeData: exchangeDataType[] = []
 
   @Mutation
@@ -58,17 +77,24 @@ class exchange extends VuexModule {
 
   @Action({ rawError: true })
   async fetchExchangesData() {
-    let flags: FlagType[] = []
+    let flags: Array<{ type: FlagType; date: string }> = []
     for (const exchange of EXCHANGES) {
-      const response: responseExchangeTransactionHistory = await $axios.$get(
+      const responseAccountData: responseAccount = await $axios.$get(
+        apiBaseUrl + 'v2/accounts/' + exchange.address
+      )
+
+      const responseTxHistory: responseExchangeTransactionHistory = await $axios.$get(
         apiBaseUrl + 'v2/accounts/' + exchange.address + '/transactions',
         {
           params: { type: 'AccountSet', result: 'tesSUCCESS' },
         }
       )
-      if (response.count > 0) {
-        flags = response.transactions?.map((tx) => {
-          return tx.tx.SetFlag as FlagType
+      if (responseTxHistory.count > 0) {
+        flags = responseTxHistory.transactions?.map((tx) => {
+          return {
+            type: tx.tx.SetFlag as FlagType,
+            date: tx.date.split('T')[0],
+          }
         })!
       } else {
         flags = []
@@ -76,13 +102,13 @@ class exchange extends VuexModule {
       this.appendExchangeData({
         ...exchange,
         flag: flags,
+        activated: responseAccountData.account_data.inception.split('T')[0],
       })
     }
   }
 
   get getExchangeData() {
+    console.log('getExchangeData: ' + this.exchangeData)
     return this.exchangeData
   }
 }
-
-export default exchange
