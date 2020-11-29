@@ -63,7 +63,7 @@ class exchange extends VuexModule {
       const response: responseExchangeTransactionHistory = await $axios.$get(
         apiBaseUrl + 'v2/accounts/' + exchange.address + '/transactions',
         {
-          params: { type: 'AccountSet' },
+          params: { type: 'AccountSet', result: 'tesSUCCESS' },
         }
       )
       if (response.count > 0) {
