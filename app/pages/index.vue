@@ -1,93 +1,77 @@
 <template>
   <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <div class="text-center">
-        <logo />
-        <vuetify-logo />
-      </div>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>
-            Vuetify is a progressive Material Design component framework for
-            Vue.js. It was designed to empower developers to create amazing
-            applications.
-          </p>
-          <p>
-            For more information on Vuetify, check out the
-            <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation </a
-            >.
-          </p>
-          <p>
-            If you have questions, please join the official
-            <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord </a
-            >.
-          </p>
-          <p>
-            Find a bug? Report it on the github
-            <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board </a
-            >.
-          </p>
-          <p>
-            Thank you for developing with Vuetify and I look forward to bringing
-            more exciting features in the future.
-          </p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3" />
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br />
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
+    <v-col
+      v-for="exchange in exchanges"
+      :key="exchange.address"
+      cols="12"
+      sm="8"
+      md="6"
+      lg="4"
+    >
+      <v-card class="ma-3">
+        <v-card-title>
+          {{ exchange.name }}
           <v-spacer />
-          <v-btn color="primary" nuxt to="/inspire"> Continue </v-btn>
-        </v-card-actions>
+          <v-btn icon :href="webLink(exchange.url)">
+            <v-icon>mdi-web</v-icon>
+          </v-btn>
+          <v-btn icon :href="twitterLink(exchange.twitter)">
+            <v-icon color="accent">mdi-twitter</v-icon>
+          </v-btn>
+        </v-card-title>
+        <v-card-subtitle>{{ exchange.address }}</v-card-subtitle>
+        <v-card-text>
+          <v-container class="pb-0">
+            <v-row>
+              <v-col class="py-2"> 入庫タグ必須 </v-col>
+              <v-col class="py-2">
+                <v-icon v-if="exchange.flag.includes(1)" color="success">
+                  mdi-check-bold
+                </v-icon>
+                <v-icon v-else color="error">mdi-alert</v-icon>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col class="py-2"> マスターキー無効化 </v-col>
+              <v-col class="py-2">
+                <v-icon v-if="exchange.flag.includes(4)" color="success">
+                  mdi-check-bold
+                </v-icon>
+                <v-icon v-else color="error">mdi-alert</v-icon>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
       </v-card>
     </v-col>
   </v-row>
 </template>
 
-<script>
-import Logo from '~/components/Logo.vue'
-import VuetifyLogo from '~/components/VuetifyLogo.vue'
-
-export default {
-  components: {
-    Logo,
-    VuetifyLogo,
+<script lang="ts">
+import { Vue, Component } from 'nuxt-property-decorator'
+import { exchanges } from '../store/index'
+@Component({
+  async asyncData() {
+    if (exchanges.getExchangeData.length === 0) {
+      await exchanges.fetchExchangesData()
+    }
   },
+})
+export default class extends Vue {
+  get exchanges() {
+    return exchanges.exchangeData
+  }
+
+  get webLink() {
+    return (url: string) => {
+      return url
+    }
+  }
+
+  get twitterLink() {
+    return (link: string) => {
+      return 'https://twitter.com/' + link
+    }
+  }
 }
 </script>

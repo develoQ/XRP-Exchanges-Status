@@ -1,4 +1,4 @@
-const colors = require('vuetify/es5/util/colors')
+import colors from 'vuetify/es5/util/colors'
 
 export default {
   srcDir: 'app',
@@ -8,8 +8,7 @@ export default {
 
   // Global page headers (https://go.nuxtjs.dev/config-head)
   head: {
-    titleTemplate: '%s - xrpExchangeStatus',
-    title: 'xrpExchangeStatus',
+    title: 'XRP Exchange Status',
     meta: [
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
@@ -22,7 +21,7 @@ export default {
   css: [],
 
   // Plugins to run before rendering page (https://go.nuxtjs.dev/config-plugins)
-  plugins: [],
+  plugins: ['~/plugins/axios-accessor'],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
   components: true,
@@ -48,7 +47,7 @@ export default {
   vuetify: {
     customVariables: ['~/assets/variables.scss'],
     theme: {
-      dark: true,
+      dark: false,
       themes: {
         dark: {
           primary: colors.blue.darken2,
