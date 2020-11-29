@@ -1,6 +1,11 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
+  privateRuntimeConfig: {
+    googleAnalytics: {
+      id: process.env.GOOGLE_ANALYTICS_ID,
+    },
+  },
   srcDir: 'app',
 
   // Target (https://go.nuxtjs.dev/config-target)
@@ -32,6 +37,7 @@ export default {
     '@nuxt/typescript-build',
     // https://go.nuxtjs.dev/vuetify
     '@nuxtjs/vuetify',
+    '@nuxtjs/google-analytics',
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)

@@ -10,7 +10,7 @@
     </v-main>
     <v-footer app>
       <div class="mx-auto">
-        <span>&copy; {{ new Date().getFullYear() }}</span>
+        <span>&copy; {{ new Date().getFullYear() }} develoQ</span>
       </div>
     </v-footer>
   </v-app>
