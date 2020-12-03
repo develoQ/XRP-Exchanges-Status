@@ -70,7 +70,6 @@ import { exchangeDataType, FlagType } from '../store/exchange'
 
 @Component({
   async asyncData() {
-    console.log(exchanges.getExchangeData)
     if (exchanges.getExchangeData.length === 0) {
       await exchanges.fetchExchangesData()
     }
@@ -102,7 +101,6 @@ export default class extends Vue {
       const filterd = ex.flag.filter((a) => {
         return a.type === flag
       })
-      console.log(filterd)
       if (filterd.length === 0) {
         return '-'
       } else {

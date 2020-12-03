@@ -108,7 +108,6 @@ export default class exchange extends VuexModule {
   }
 
   get getExchangeData() {
-    console.log('getExchangeData: ' + this.exchangeData)
     return this.exchangeData
   }
 }
