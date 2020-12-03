@@ -50,7 +50,7 @@ export const EXCHANGES: ExchangeType[] = [
   },
   {
     name: 'BITMAX',
-    address: 'rsf1RmhEtexrGufUa4pfXBW7sEqkXFKfxB',
+    address: 'rBZF2XNtEHnDFbv3dr6U7GCUz9UGputrnu',
     url: '	https://www.bitmax.me',
     twitter: 'BITMAX_JP',
   },
